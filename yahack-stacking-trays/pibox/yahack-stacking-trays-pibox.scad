@@ -4,17 +4,19 @@
 
 // Inner x,y,z volume available for your project. Note the box is orented with the endcaps in the X direction
 // All features grow outward from this volume, so the outer box dimensions will be somewhat larger.
-box_inner_volume_x = 170;
-box_inner_volume_y = 150;
-box_inner_volume_z = 80;
-
+box_inner_volume_x = 6*25.4;
+box_inner_volume_y = 4*25.4;
+box_inner_volume_z = 75;
+//box_inner_volume_x = 20;
+//box_inner_volume_y = 20;
+//box_inner_volume_z = 7;
 
 // Sidewall parameters.
 shelf_ledge_width = 3; // Width of shelf mounting ledges (cut into wall);
 wall_thickness = 2.5; // Solid outer wall portion, total wall thickness is the sum of this and shelf_ledge_width
 shelf_thickness = 1.27; // Thickness of the shelf material, add a bit of clearance here for a looser fit
 shelf_clearance = 0.6; // width/thickness clearances
-shelf_pitch = 10; // put a shelf every this many mm
+shelf_pitch = 15; // put a shelf every this many mm
 
 
 // Floor and ceiling settings. Keep at least one unless you really know what you're doing, otherwise
@@ -27,13 +29,13 @@ shelf_pitch = 10; // put a shelf every this many mm
 //   2: open, only connects the walls at the endcaps and leaves the area above the inner volume open
 
 use_floor = true;
-floor_style = 2; // 0: normal, 1: hexgrid, 2: open
+floor_style = 0; // 0: normal, 1: hexgrid, 2: open
 use_ceiling = true;
-ceiling_style = 2;
+ceiling_style = 1;
 floor_ceiling_thickness = 5.5;
 
 // Endplate slot settings
-end_plate_slot_thickness = 0.69; // Nominal thickness of your endplate stock
+end_plate_slot_thickness = 1.27; // Nominal thickness of your endplate stock
 end_plate_slot_clearance = 0.6;
 end_plate_capture_thickness = 3; // Additional wall thickness beyond endplate to hold it in place
 
@@ -354,7 +356,7 @@ module pin()
 }
 
 
-module hexgrid(x, y, z, cell_size=10, cell_spacing=3)
+module hexgrid(x, y, z, cell_size=5, cell_spacing=7)
 {
 
 
