@@ -1,7 +1,10 @@
-// Replacement plastic insert / coupler for Kohler(R) Rite-Temp(R) shower trim kit (faucet handle).
+// Replacement stem driver (plastic insert / coupler) for Kohler(R) Rite-Temp(R) shower trim kit (faucet handle).
 // The author of this file is not affiliated with Kohler(R), all trademarks are the property of their respective owners and used nominatively.
 
-// This is a small plastic bit that couples the shower handle to a square peg (key) on the actual valve in the wall. On my said unit, this coupler broke (corners cracked) at just over a year old (note the warranty period is 1 year).
+// By Tim (drmn4ea at google's mail service)
+// License: Creative Commons - Attribution - Share-Alike
+
+// The stem driver is a small plastic bit that couples the shower handle to a mating feature on the valve stem (a square peg/key on the actual valve in the wall). On my said unit, this coupler broke (corners cracked) at just over a year old (note the warranty period is 1 year). Judging by the reviews for this unit (9 reviews, all 1-2-star and complaining of a cracked stem driver as of 7/14/2024) this is a common problem:  https://www.kohler.com/en/support/find-a-service-part/shop-parts/assembly-handle-1332384?skuId=1332384-BL
 
 // Dimensions below are for the  K-TS22028-4-BN and other K-TS22028-4 , but it appears a similar part is used in other handles with minor variation in e.g. lengths. Hopefully, the below is generic enough to accomodate those variations.
 
@@ -38,7 +41,7 @@ C = A+(.810*inch); // Distance to near edge of 'wall CD'
 D = C+(.128*inch); // Distance to far edge of 'wall CD' (beginning of the wall key)
 B = D-(.755*inch) ; // Distance to face of screw countersink
 
-E = C+(.965 * inch); // Total length to outer edge of wall key
+E = C+(.965 * inch); // Total length to outer edge of wall key // .375 inch extra fudge factor
 
 // Outer dimensions (F-H)
 
@@ -57,8 +60,8 @@ E = C+(.965 * inch); // Total length to outer edge of wall key
 //    F    G             H
 
 F = .410 * inch; // Width (face-to-face) of square faucet key
-G = .590 * inch; // Diameter of cylinder F
-H = .875 * inch; // Diameter of wall key outer cylinder
+G = .580 * inch; // Diameter of cylinder F // .590
+H = .925 * inch; // Diameter of wall key outer cylinder // .875
 
 // Note, wall key G's outer dimension is not critical, in my unit the outermost feature of the part is .875", but
 // the actual clearance is more like 1.15". Feel free to oversize this a bit for some extra strength.
