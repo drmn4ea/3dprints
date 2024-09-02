@@ -1,10 +1,18 @@
+// Backstrip (splashguard) for Glass Aquarium Lid
+// By Tim (drmn4ea at google's mail service)
+// License: Creative Commons - Attribution - Share-Alike
 
+// This is a simple replacement backstrip (splashguard) for glass aquarium lids. Use the values below to customize for different glass thickness, length/geometry and any extra edge features.
+
+// This part can be printed upright, either 'tall' (side edge down) or 'long' (glass-hugging edge down), without supports. In the 'tall' orientation, it can be printed in vase mode ("spiralize outer contour" in Cura) for faster printing times, better optical transparency and easy string avoidance (e.g. when using PETG). When using vase mode with the default thickness, try tweaking the wall thickness and your slicer's extrusion width so that the extrusion is thicker than the part so the 'walls' of the vase mode slice fuse together. This provides added strength and transparency. For my 0.4mm nozzle, I set the extrusion width to 0.7mm and the wall thickness to 0.045" (1.143mm), and printed in clear PETG.
+
+// Either way, it may be necessary to print in several sections to span the entire tank. Of course you can generate and combine sections of varying width and depth to avoid filters and other obstacles as opposed to trimming the printed parts.
 
 inch = 25.4; // mm
 
 wall_thickness = .045 * inch;
-splashguard_depth = 2.2 * inch; // Overall depth to cover from edge of glass to edge of tank
-extrude_len = 5 * inch; // Length of the splashguard/tank (or bed height of your printer and print multiple sections)
+splashguard_depth = 1 * inch; // Overall depth to cover from edge of glass to edge of tank
+extrude_len = 1 * inch; // Length of the splashguard/tank (or bed height of your printer and print multiple sections)
 
 glass_capture_depth = .375 * inch; // Portion that captures onto the glass
 glass_capture_thickness = (.125-.01) * inch; // actual glass thickness, may benefit from a tiny fudge factor
