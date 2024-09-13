@@ -4,15 +4,19 @@
 
 // Inner x,y,z volume available for your project. Note the box is orented with the endcaps in the X direction
 // All features grow outward from this volume, so the outer box dimensions will be somewhat larger.
-box_inner_volume_x = 170;
-box_inner_volume_y = 150;
-box_inner_volume_z = 80;
+//box_inner_volume_x = 170;
+//box_inner_volume_y = 150-1.2;
+//box_inner_volume_z = 80;
+
+box_inner_volume_x = 51; // depth (distance between endplates)
+box_inner_volume_y = 15; // width
+box_inner_volume_z = 10; // height
 
 
 // Sidewall parameters.
 shelf_ledge_width = 3; // Width of shelf mounting ledges (cut into wall);
 wall_thickness = 2.5; // Solid outer wall portion, total wall thickness is the sum of this and shelf_ledge_width
-shelf_thickness = 1.27; // Thickness of the shelf material, add a bit of clearance here for a looser fit
+shelf_thickness = 1.7; // Thickness of the shelf material
 shelf_clearance = 0.6; // width/thickness clearances
 shelf_pitch = 10; // put a shelf every this many mm
 
@@ -33,7 +37,7 @@ ceiling_style = 2;
 floor_ceiling_thickness = 5.5;
 
 // Endplate slot settings
-end_plate_slot_thickness = 0.69; // Nominal thickness of your endplate stock
+end_plate_slot_thickness = 0.9; // Nominal thickness of your endplate stock
 end_plate_slot_clearance = 0.6;
 end_plate_capture_thickness = 3; // Additional wall thickness beyond endplate to hold it in place
 
@@ -42,7 +46,7 @@ end_plate_capture_thickness = 3; // Additional wall thickness beyond endplate to
 stacking_pillar_pin_dia = 5; // Diameter of mating portion of stacking pins
 stacking_pillar_height = 5; // Height of mating portion
 stacking_pillar_bolster_dia = 10; // Diameter of bolster/receptacle for mating pins
-stacking_pillar_clearance = 0.6; // Clearance between pin & receptacle
+stacking_pillar_clearance = 0.9; // Clearance between pin & receptacle
 stacking_pillar_pitch = 50; // Add a pillar every this many mm
 
 // All-important openSCAD fudge factor added to face geometry that would otherwise exactly touch
@@ -56,6 +60,9 @@ total_box_width = box_inner_volume_y + 2*(wall_thickness + shelf_ledge_width);
 // Additional length at front/rear to accommodate endplates
 endwall_total_thickness = end_plate_slot_thickness + end_plate_slot_clearance + end_plate_capture_thickness;
 
+// shelf_clearance
+shelfwall_total_thickness = wall_thickness + shelf_ledge_width + (2*shelf_clearance);
+shelfwall_total_length = box_inner_volume_x + (2*endwall_total_thickness);
 // TODO: Fix invalid settings (e.g. stacking feature depth taller than total height
 
 // For convenience, output the recommended shelf dimensions. Yes, the user basically just entered them, but
@@ -89,25 +96,56 @@ difference()
 module main()
 {
     // Do some math
-    stacking_pillar_offset = ((stacking_pillar_bolster_dia/2)+shelf_ledge_width + shelf_clearance);
+    // Offset stacking pillar center by total bolster receptacle radius from outside wall
+    old_stacking_pillar_offset = ((stacking_pillar_bolster_dia/2)+shelf_ledge_width + shelf_clearance);
+    
+    stacking_pillar_edge_offset = shelfwall_total_thickness + (stacking_pillar_clearance + stacking_pillar_pin_dia)/2;
+    stacking_pillar_abs_offset = (box_inner_volume_y/2) + stacking_pillar_edge_offset;
+    
+    echo("Old pillar offset:" , old_stacking_pillar_offset);
+    echo("New pillar offset:" , stacking_pillar_edge_offset);
+    
+    echo("Pillar center-to-center distance:" , stacking_pillar_abs_offset*2);
+    
+    //((stacking_pillar_bolster_dia/2)+shelf_ledge_width + shelf_clearance  + (1*wall_thickness));
+
+//stacking_pillar_pin_dia = 5; // Diameter of mating portion of stacking pins
+//stacking_pillar_height = 5; // Height of mating portion
+//stacking_pillar_bolster_dia = 10; // Diameter of bolster/receptacle for mating pins
+//stacking_pillar_clearance = 0.6; // Clearance between pin & receptacle
+
 
     // For diagnostic purposes only, show the actual volume we are to enclose without interfering
     //cube([box_inner_volume_x, box_inner_volume_y, box_inner_volume_z], center=true);
 
-    // Add the stacking pins at the 4 corners of the volume, offset so that they are just outside it
-    n_pillars = floor((box_inner_volume_x-(2*stacking_pillar_offset))/stacking_pillar_pitch);
+    // Add the stacking pins on both sides along the depth volume, offset so that they are just outside it
+    // "n_pillar_steps" is the number of pillars stepped and repeated beyond the required 1st, which occurs at a fixed depth offset
+    // Enforce non-negative value in pathalogical cases where the minimum depth wasn't met and place the 0th pillars anyway
+    n_pillar_steps = max(-1, floor((box_inner_volume_x+(2*endwall_total_thickness) - stacking_pillar_bolster_dia)/stacking_pillar_pitch));
     
-    translate([-(box_inner_volume_x/2)+(stacking_pillar_offset/2), (box_inner_volume_y/2)+stacking_pillar_offset, -total_height/2])
+    echo(n_pillar_steps);
+    
+//        translate([0, box_inner_volume_y/2 + shelfwall_total_thickness, 0])
+//    {
+//        pinrow(2, 10);
+//    }
+    
+    //endwall_total_thickness // +(endwall_total_thickness/2)
+    //depth_offset = 0;
+    // Nudge the edge of the pillars flush with the front face:
+    // account for pillar's radius
+    depth_offset = -(box_inner_volume_x/2) - endwall_total_thickness + (stacking_pillar_bolster_dia/2);
+    translate([depth_offset, stacking_pillar_abs_offset, -total_height/2])
     {
 
-        pinrow(n_pillars, stacking_pillar_pitch);
+        pinrow(n_pillar_steps, stacking_pillar_pitch);
 
 
     }
 
-    translate([-(box_inner_volume_x/2)+(stacking_pillar_offset/2), -(box_inner_volume_y/2)-stacking_pillar_offset, -total_height/2])
+    translate([depth_offset, -stacking_pillar_abs_offset, -total_height/2])
     {
-        pinrow(n_pillars, stacking_pillar_pitch);
+        pinrow(n_pillar_steps, stacking_pillar_pitch);
     }
     
     // Add the sidewalls with the shelf features
@@ -268,9 +306,7 @@ module both_shelfwalls()
 
 module shelfwall()
 {
-    // shelf_clearance
-    shelfwall_total_thickness = wall_thickness + shelf_ledge_width + (2*shelf_clearance);
-    shelfwall_total_length = box_inner_volume_x + (2*endwall_total_thickness);
+
     
     // Shift so that wall is built outward from starting Y dimension
     translate([0,shelfwall_total_thickness/2,0])
