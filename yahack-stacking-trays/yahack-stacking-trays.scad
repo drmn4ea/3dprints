@@ -1,23 +1,25 @@
 // Yet-another hardware asset containment kit (YaHACK)
-// (C)2023 drmn4ea at gmail
+// (C)2024 drmn4ea at gmail
 // License: CC BY-SA (https://creativecommons.org/licenses/by-sa/4.0/)
+
+// Common settings
+include <yahack-settings.scad>
 
 // Inner x,y,z volume available for your project. Note the box is orented with the endcaps in the X direction
 // All features grow outward from this volume, so the outer box dimensions will be somewhat larger.
-//box_inner_volume_x = 170;
-//box_inner_volume_y = 150-1.2;
-//box_inner_volume_z = 80;
+
 
 box_inner_volume_x = 51; // depth (distance between endplates)
 box_inner_volume_y = 15; // width
 box_inner_volume_z = 10; // height
 
 
+
 // Sidewall parameters.
 shelf_ledge_width = 3; // Width of shelf mounting ledges (cut into wall);
-wall_thickness = 2.5; // Solid outer wall portion, total wall thickness is the sum of this and shelf_ledge_width
+wall_thickness = 2.5; // Solid outer wall portion, total wall thickness is the sum of this, shelf_ledge_width and any additional clearance
 shelf_thickness = 1.7; // Thickness of the shelf material
-shelf_clearance = 0.6; // width/thickness clearances
+
 shelf_pitch = 10; // put a shelf every this many mm
 
 
@@ -38,30 +40,18 @@ floor_ceiling_thickness = 5.5;
 
 // Endplate slot settings
 end_plate_slot_thickness = 0.9; // Nominal thickness of your endplate stock
-end_plate_slot_clearance = 0.6;
-end_plate_capture_thickness = 3; // Additional wall thickness beyond endplate to hold it in place
 
 
-// Stacking feature settings
-stacking_pillar_pin_dia = 5; // Diameter of mating portion of stacking pins
-stacking_pillar_height = 5; // Height of mating portion
-stacking_pillar_bolster_dia = 10; // Diameter of bolster/receptacle for mating pins
-stacking_pillar_clearance = 0.9; // Clearance between pin & receptacle
-stacking_pillar_pitch = 50; // Add a pillar every this many mm
-
-// All-important openSCAD fudge factor added to face geometry that would otherwise exactly touch
-// (makes preview less of a mess)
-fudge = 0.01;
 
 //// global math
-total_height = box_inner_volume_z + floor_ceiling_thickness + floor_ceiling_thickness;
+total_height = box_inner_volume_z + (floor_ceiling_thickness*2);
 // Total width excluding stacking features
 total_box_width = box_inner_volume_y + 2*(wall_thickness + shelf_ledge_width);
 // Additional length at front/rear to accommodate endplates
 endwall_total_thickness = end_plate_slot_thickness + end_plate_slot_clearance + end_plate_capture_thickness;
 
 // shelf_clearance
-shelfwall_total_thickness = wall_thickness + shelf_ledge_width + (2*shelf_clearance);
+shelfwall_total_thickness = wall_thickness + shelf_ledge_width + (1*shelf_clearance); // FIXME: was 2x, why?
 shelfwall_total_length = box_inner_volume_x + (2*endwall_total_thickness);
 // TODO: Fix invalid settings (e.g. stacking feature depth taller than total height
 
@@ -87,7 +77,7 @@ difference()
     {
         mirror([1, 0, 0])
         {
-        endslot();
+            endslot();
         }
     }
 }
